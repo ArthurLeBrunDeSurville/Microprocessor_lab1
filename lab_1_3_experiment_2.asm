@@ -1,3 +1,7 @@
+/* OBJECTIVES : 
+    Display the number of time a button is pressed on a LCD
+*/
+
 /*
 CONNECTING COMPONENTS:
 PORT A: LCD
@@ -96,21 +100,21 @@ HANG_DONVI:
 ; DESCRIPTION:
 ;------------------------------------------------------------
 CHECK_BUTTON:
-NHAN_NUT:                   ; BUTTON PRESS
+BUTTON_PRESSED:             ; BUTTON PRESS
     SBIC PINC, 0            ; Skip if button not pressed
-    RJMP NHAN_NUT           ; Keep checking button press
+    RJMP PRESSED_BUTTON     ; Keep checking button press
     LDI R16, 250            ; DELAY 10MS
     RCALL DELAY_US          ; Call delay subroutine
     SBIC PINC, 0            ; Skip if button not pressed
-    RJMP NHAN_NUT           ; Keep checking button press
+    RJMP BUTTON_PRESSED     ; Keep checking button press
 
-NHA_NUT:                    ; BUTTON RELEASE
+BUTTON_RELEASED:            ; BUTTON RELEASE
     SBIS PINC, 0            ; Skip if button pressed
-    RJMP NHA_NUT            ; Keep checking button release
+    RJMP BUTTON_RELEASED    ; Keep checking button release
     LDI R16, 250            ; DELAY 25MS
     RCALL DELAY_US          ; Call delay subroutine
     SBIS PINC, 0            ; Skip if button pressed
-    RJMP NHA_NUT            ; Keep checking button release
+    RJMP BUTTON_RELEASED    ; Keep checking button release
 
     ; Process when button is pressed
     INC R18                 ; Increment the press count
@@ -145,12 +149,12 @@ NUM_8_BIT_TO_BCD:
 ;------------------------------------------------------------
 DIV10: 
     CLR R15                 ; R15: quotient
-TIEP_TUC_TRU:
+SUBSTRACT:
     SUB R17, R16            ; Subtract R16 from R17
-    BRCS DUARA_KETQUA      ; Branch if carry set (not divisible)
+    BRCS RINT_RESULT      ; Branch if carry set (not divisible)
     INC R15                 ; Increment quotient
-    RJMP TIEP_TUC_TRU       ; Continue subtracting
-DUARA_KETQUA:
+    RJMP SUBSTRACT      ; Continue subtracting
+PRINT_RESULT:
     ADD R17, R16            ; Restore the remainder
     MOV R16, R17            ; R16: remainder
     MOV R17, R15            ; R17: quotient
